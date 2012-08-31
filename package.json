@@ -1,0 +1,21 @@
+{
+    "name": "faux",
+    "version": "0.1.0",
+    "author": "nathaniel k smith <nathanielksmith@gmail.com>",
+    "description": "a mocking utility library",
+    "main": "./lib/faux",
+    "repository":{
+        "type":"git",
+        "url":"https://github.com/nathanielksmith/faux.git"
+    },
+    "keywords": [
+        "mock",
+        "testing"
+    ],
+    "dependencies": {
+    },
+    "license": "BSD",
+    "engines": {
+        "node": ">=0.8"
+    }
+}
