@@ -72,23 +72,45 @@ exports.test_object_spec = {
 
 exports.test_MockFunction = {
     setUp: function(cb) {
-        this.f = function() { return "hi" };
-        this.mock_f = new Mock.MockFunction(this.f);
         cb();
     },
     test_passthrough: function(test) {
+        var f = function() { return "hi" };
+        var mock_f = new Mock.MockFunction(f).wrapped;
+        var result = mock_f();
+        test.equal(result, 'hi', 'got result');
+        test.equal(mock_f.calls, 1, 'saw call');
+
         test.done();
     },
     test_noop: function(test) {
+        var mock_f = new Mock.MockFunction().wrapped;
+        var result = mock_f();
+        test.ok(!result, 'got no result from noop');
+        test.equal(mock_f.calls, 1, 'saw call');
+
         test.done();
     },
     test_call_count: function(test) {
+        var mock_f = new Mock.MockFunction().wrapped;
+        [1,2,3,4,5].forEach(mock_f);
+        test.equal(mock_f.calls, 5, 'saw 5 calls');
+
         test.done();
     },
     test_args: function(test) {
+        var mock_f = new Mock.MockFunction().wrapped;
+        [1,2,3,4,5].forEach(function(x) { mock_f(x); });
+        test.deepEqual(mock_f.args, [[1],[2],[3],[4],[5]], 'saw right args');
+
         test.done();
     },
     test_called: function(test) {
+        var mock_f = new Mock.MockFunction().wrapped;
+        test.equal(mock_f.called, false, 'not called yet');
+        mock_f();
+        test.ok(mock_f.called, 'saw it was called');
+
         test.done();
     }
 };
