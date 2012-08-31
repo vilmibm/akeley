@@ -1,4 +1,4 @@
-# faux
+# akeley
 
 _being a mocking utility_
 
@@ -9,7 +9,7 @@ experimentation until further notice.
 
 ## mock something out
 
-        var Mock = require('faux').Mock
+        var Mock = require('akeley').Mock
 
         var mock_akeley = new Mock({
             name: 'Henry Akeley',

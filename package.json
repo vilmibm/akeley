@@ -1,12 +1,12 @@
 {
-    "name": "faux",
+    "name": "akeley",
     "version": "0.1.0",
     "author": "nathaniel k smith <nathanielksmith@gmail.com>",
     "description": "a mocking utility library",
-    "main": "./lib/faux",
+    "main": "./lib/akeley",
     "repository":{
         "type":"git",
-        "url":"https://github.com/nathanielksmith/faux.git"
+        "url":"https://github.com/nathanielksmith/akeley.git"
     },
     "keywords": [
         "mock",
