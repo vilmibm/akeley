@@ -8,6 +8,7 @@
         "type":"git",
         "url":"https://github.com/nathanielksmith/akeley.git"
     },
+    "scripts": { "test": "nodeunit ./tests" },
     "keywords": [
         "mock",
         "testing"
