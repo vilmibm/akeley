@@ -104,6 +104,17 @@ exports.test_mock_function = {
         test.throws(mock_f, 'error', 'saw error');
         test.done();
     },
+    test_side_effect_and_func: function(test) {
+        var affected = 0;
+        var mockf = Mock.create_func({
+            func: function() { return 5 },
+            side_effect: function() { affected += 1}
+        });
+        var ret = mockf();
+        test.equal(affected, 1, 'side effect happened');
+        test.equal(ret, 5, 'func called');
+        test.done();
+    },
     test_return_value: function(test) {
         var mock_f = Mock.create_func({return_value: 5});
         test.equal(mock_f(), 5, 'saw return value');
@@ -129,6 +140,20 @@ exports.test_mock_function = {
         mock_f();
         test.ok(mock_f.called, 'saw it was called');
 
+        test.done();
+    }
+};
+
+exports.test_create_nested = {
+    test_empty_target: function(test) {
+        var result = Mock.create_nested_obj({}, ['hi', 'there', 'how']);
+        test.ok(result.hi.there.how, 'nested properly');
+        test.done();
+    },
+    test_nonempty_target: function(test) {
+        var result = Mock.create_nested_obj({a:'b'}, ['hi', 'there', 'how']);
+        test.ok(result.hi.there.how, 'nested properly');
+        test.equal(result.a, 'b', 'preserved target');
         test.done();
     }
 };

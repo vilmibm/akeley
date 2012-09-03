@@ -42,10 +42,20 @@ experimentation until further notice.
 
 ## just make a watched function
 
+        // set a return value
         var mockf = Mock.create_func({return_value:5});
         mockf(): // 5
         mockf.called // true
-        // etc
+
+        // wrap a real function
+        var mockf = Mock.create_func({
+            func: some_useful_real_func
+        });
+
+        // cause side effects
+        var mockf = Mock.create_func({
+            side_effect: function() { throw 'error' }
+        });
 
 ## create a nested structure
 
