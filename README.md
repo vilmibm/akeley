@@ -42,16 +42,14 @@ experimentation until further notice.
 
 ## just make a watched function
 
-        var f = function() {};
-        var mf = new Mock.MockFunction(f);
-
-        mf();
-        mf.called; // true
+        var mockf = Mock.create_func({return_value:5});
+        mockf(): // 5
+        mockf.called // true
         // etc
 
 ## create a nested structure
 
-        var nested = Mock.create_nested_mock({}, ['hi', 'there', 'how', 'are', 'you']);
+        var nested = Mock.create_nested_obj({}, ['hi', 'there', 'how', 'are', 'you']);
         nested.hi.there.how.are.you = 'hi';
 
 ## author
