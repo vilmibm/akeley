@@ -2,11 +2,6 @@
 
 _being a mocking utility_
 
-## status
-
-very much a work in progress. not recommended for any use outside of
-experimentation until further notice.
-
 ## mock something out
 
         var Mock = require('akeley').Mock
@@ -39,6 +34,8 @@ experimentation until further notice.
         mock_akeley.think.called; // true
         mock_akeley.think.calls; // 2
         mock_akeley.think.args; // [ ['i hate the mi-go'], ['i love the mi-go'] ]
+
+        mock_akeley.think.reset(); // reset called, calls, args
 
 ## just make a watched function
 

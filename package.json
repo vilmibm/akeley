@@ -1,6 +1,6 @@
 {
     "name": "akeley",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "author": "nathaniel k smith <nathanielksmith@gmail.com>",
     "description": "a mocking utility library",
     "main": "./lib/akeley",

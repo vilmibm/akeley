@@ -29,7 +29,6 @@ exports.test_object_spec = {
         test.equal(mock_cat.vitals.appearance.legs, 4, 'legs set');
         test.deepEqual(mock_cat.vitals.appearance.colours, ['orange', 'black', 'brown'], 'colours set');
         test.done()
-
     },
     test_functions: function(test) {
         var cat = {
@@ -140,6 +139,16 @@ exports.test_mock_function = {
         mock_f();
         test.ok(mock_f.called, 'saw it was called');
 
+        test.done();
+    },
+    test_reset: function(test) {
+        var mock_f = Mock.create_func();
+        mock_f(); mock_f(); mock_f();
+        test.equal(mock_f.calls, 3, 'sanity: saw three calls');
+        mock_f.reset();
+        test.equal(mock_f.calls, 0, 'reset call count');
+        test.equal(mock_f.called, false, 'reset called boolean');
+        test.deepEqual(mock_f.args, [], 'reset args');
         test.done();
     }
 };
