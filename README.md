@@ -4,9 +4,9 @@ _being a mocking utility_
 
 ## mock something out
 
-        var Mock = require('akeley').Mock
+        var m = require('akeley');
 
-        var mock_akeley = new Mock({
+        var mock_akeley = m.create_mock({
             name: 'Henry Akeley',
             profession: 'Antiquarian',
             vitals: {
@@ -29,7 +29,7 @@ _being a mocking utility_
 
         mock_akeley.speak.called; // true
         mock_akeley.speak.calls; // 1
-        mock_akeley.speakargs; // [ [] ]
+        mock_akeley.speak.args; // [ [] ]
 
         mock_akeley.think.called; // true
         mock_akeley.think.calls; // 2
@@ -37,10 +37,22 @@ _being a mocking utility_
 
         mock_akeley.think.reset(); // reset called, calls, args
 
+        // Does right thing when fed a function
+        var _ = require('underscore'); // for example
+        var mock_ = m.create_mock(_);
+        mock_();
+        mock_.called // true
+        mock_.bind // set to a mock function
+
+        // tweak its behavior
+        mock_.return_value = 'azathoth';
+        mock_(); // 'azathoth'
+
+
 ## just make a watched function
 
         // set a return value
-        var mockf = Mock.create_func({return_value:5});
+        var mockf = m.create_func({return_value:5});
         mockf(): // 5
         mockf.called // true
 
@@ -54,10 +66,27 @@ _being a mocking utility_
             side_effect: function() { throw 'error' }
         });
 
+
 ## create a nested structure
 
-        var nested = Mock.create_nested_obj({}, ['hi', 'there', 'how', 'are', 'you']);
+        var nested = m.create_nested_obj({}, ['hi', 'there', 'how', 'are', 'you']);
         nested.hi.there.how.are.you = 'hi';
+
+## changelog
+
+0.5.0
+
+ * totally change API so mocking Functions as objects works
+ * support altering return\_value and friends as properties
+ * update tests
+
+0.4.0
+
+ * add 'reset' feature
+
+< 0.3.0
+
+ * who even knows
 
 ## author
 
