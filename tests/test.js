@@ -12,6 +12,16 @@ exports.test_object_spec = {
         test.equal(mock_cat.age, 6, 'age set');
         test.done();
     },
+    test_is_a_function: function(test) {
+        var heyquery = function() { return 'dom stuff'; }
+        heyquery.ajax = function() { return 'networks'; }
+        heyquery.stuff = 'awesome';
+        var mock = new Mock(heyquery);
+        test.equal(mock.ajax.called, false, 'mocked function');
+        test.equal(mock.stuff, 'awesome', 'preserved property');
+        test.equal(mock(), 'dom stuff', 'mock is still a function');
+        test.done();
+    },
     test_nested: function(test) {
         var cat = {
             vitals: {
