@@ -1,4 +1,4 @@
-var Mock = require('../lib/akeley').Mock;
+var m = require('../lib/akeley');
 
 exports.test_object_spec = {
     setUp: function(cb) { cb() },
@@ -7,7 +7,7 @@ exports.test_object_spec = {
             name: 'unix',
             age: 6
         };
-        var mock_cat = new Mock(cat);
+        var mock_cat = m.create_mock(cat);
         test.equal(mock_cat.name, 'unix', 'name set');
         test.equal(mock_cat.age, 6, 'age set');
         test.done();
@@ -16,10 +16,11 @@ exports.test_object_spec = {
         var heyquery = function() { return 'dom stuff'; }
         heyquery.ajax = function() { return 'networks'; }
         heyquery.stuff = 'awesome';
-        var mock = new Mock(heyquery);
+        var mock = m.create_mock(heyquery);
+        mock.return_value = 'doms and roms';
         test.equal(mock.ajax.called, false, 'mocked function');
         test.equal(mock.stuff, 'awesome', 'preserved property');
-        test.equal(mock(), 'dom stuff', 'mock is still a function');
+        test.equal(mock(), 'doms and roms', 'mock is still a function');
         test.done();
     },
     test_nested: function(test) {
@@ -33,7 +34,7 @@ exports.test_object_spec = {
                 }
             }
         };
-        var mock_cat = new Mock(cat);
+        var mock_cat = m.create_mock(cat);
         test.equal(mock_cat.vitals.age, 6, 'age set');
         test.equal(mock_cat.vitals.weight, 17, 'weight set');
         test.equal(mock_cat.vitals.appearance.legs, 4, 'legs set');
@@ -48,7 +49,7 @@ exports.test_object_spec = {
                 sleep: function() { return "zzz" }
             }
         };
-        var mock_cat = new Mock(cat);
+        var mock_cat = m.create_mock(cat);
         test.equal(mock_cat.speak.called, false, 'function wrapped');
         test.equal(mock_cat.abilities.sit.called, false, 'function wrapped');
         test.equal(mock_cat.abilities.sleep.called, false , 'function wrapped');
@@ -67,7 +68,7 @@ exports.test_object_spec = {
                 sleep: function() { return "zzz" }
             }
         };
-        var mock_cat = new Mock(cat);
+        var mock_cat = m.create_mock(cat);
         test.equal(mock_cat.name, 'unix', 'name is set');
         test.equal(mock_cat.vitals.age, 6, 'age is set');
         test.deepEqual(mock_cat.vitals.colours, ['orange', 'black', 'brown'], 'colours is set');
@@ -82,7 +83,7 @@ exports.test_object_spec = {
 exports.test_mock_function = {
     test_func: function(test) {
         var f = function() { return "hi" };
-        var mock_f = Mock.create_func({func: f});
+        var mock_f = m.create_func({func: f});
         var result = mock_f();
         test.equal(result, 'hi', 'got result');
         test.equal(mock_f.calls, 1, 'saw call');
@@ -90,7 +91,7 @@ exports.test_mock_function = {
         test.done();
     },
     test_no_args: function(test) {
-        var mock_f = Mock.create_func();
+        var mock_f = m.create_func();
         var result = mock_f();
         test.ok(!result, 'got no result from noop');
         test.equal(mock_f.calls, 1, 'saw call');
@@ -99,7 +100,7 @@ exports.test_mock_function = {
     },
     test_side_effect: function(test) {
         var affected = 0;
-        var mock_f = Mock.create_func({
+        var mock_f = m.create_func({
             side_effect: function() {affected += 1}
         });
         mock_f();
@@ -107,7 +108,7 @@ exports.test_mock_function = {
         test.done();
     },
     test_side_effect_error: function(test) {
-        var mock_f = Mock.create_func({
+        var mock_f = m.create_func({
             side_effect: function() { throw 'error' }
         });
         test.throws(mock_f, 'error', 'saw error');
@@ -115,7 +116,7 @@ exports.test_mock_function = {
     },
     test_side_effect_and_func: function(test) {
         var affected = 0;
-        var mockf = Mock.create_func({
+        var mockf = m.create_func({
             func: function() { return 5 },
             side_effect: function() { affected += 1}
         });
@@ -125,26 +126,26 @@ exports.test_mock_function = {
         test.done();
     },
     test_return_value: function(test) {
-        var mock_f = Mock.create_func({return_value: 5});
+        var mock_f = m.create_func({return_value: 5});
         test.equal(mock_f(), 5, 'saw return value');
         test.done();
     },
     test_call_count: function(test) {
-        var mock_f = Mock.create_func();
+        var mock_f = m.create_func();
         [1,2,3,4,5].forEach(mock_f);
         test.equal(mock_f.calls, 5, 'saw 5 calls');
 
         test.done();
     },
     test_args: function(test) {
-        var mock_f = Mock.create_func();
+        var mock_f = m.create_func();
         [1,2,3,4,5].forEach(function(x) { mock_f(x); });
         test.deepEqual(mock_f.args, [[1],[2],[3],[4],[5]], 'saw right args');
 
         test.done();
     },
     test_called: function(test) {
-        var mock_f = Mock.create_func();
+        var mock_f = m.create_func();
         test.equal(mock_f.called, false, 'not called yet');
         mock_f();
         test.ok(mock_f.called, 'saw it was called');
@@ -152,7 +153,7 @@ exports.test_mock_function = {
         test.done();
     },
     test_reset: function(test) {
-        var mock_f = Mock.create_func();
+        var mock_f = m.create_func();
         mock_f(); mock_f(); mock_f();
         test.equal(mock_f.calls, 3, 'sanity: saw three calls');
         mock_f.reset();
@@ -160,17 +161,30 @@ exports.test_mock_function = {
         test.equal(mock_f.called, false, 'reset called boolean');
         test.deepEqual(mock_f.args, [], 'reset args');
         test.done();
+    },
+    test_set_after: function(test) {
+        var mock_f = m.create_func();
+        test.equal(mock_f(), null, 'sanity: see null on new mock func');
+        mock_f.return_value = 'nyarlathotep';
+        test.equal(mock_f(), 'nyarlathotep', 'see new return value');
+        var a;
+        mock_f.side_effect = function() { a = 1; };
+        mock_f();
+        test.equal(a, 1, 'side_effect called');
+        mock_f.func = function() { return 'marshmellow'; };
+        test.equal(mock_f(), 'marshmellow', 'func works');
+        test.done();
     }
 };
 
 exports.test_create_nested = {
     test_empty_target: function(test) {
-        var result = Mock.create_nested_obj({}, ['hi', 'there', 'how']);
+        var result = m.create_nested_obj({}, ['hi', 'there', 'how']);
         test.ok(result.hi.there.how, 'nested properly');
         test.done();
     },
     test_nonempty_target: function(test) {
-        var result = Mock.create_nested_obj({a:'b'}, ['hi', 'there', 'how']);
+        var result = m.create_nested_obj({a:'b'}, ['hi', 'there', 'how']);
         test.ok(result.hi.there.how, 'nested properly');
         test.equal(result.a, 'b', 'preserved target');
         test.done();
